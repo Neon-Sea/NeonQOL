@@ -1,0 +1,3 @@
+displayName = Enhanced Staff of Regrowth
+author = NeonSea
+version = 0.1

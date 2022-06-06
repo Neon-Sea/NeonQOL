@@ -1,0 +1,4 @@
+A partial port of BotanyPlus from 1.3. Adds the following features to the Staff of Regrowth:
+- Can be autoselected
+- Works with the smart cursor
+- Automatically replants seeds in pots and planters
