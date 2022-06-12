@@ -79,53 +79,12 @@ namespace NeonQOL
 
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-			//KillTile override for blooming herbs so that items drop properly in both single and multiplayer, and makes seeds replant if holding staff
-			if (Main.netMode != NetmodeID.Server && (type == TileID.MatureHerbs || type == TileID.BloomingHerbs))
+			//KillTile override for blooming herbs, makes seeds replant if holding staff and adjusts seed drops accordingly
+			if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
 			{
-				Player player = Main.player[Main.myPlayer];
+				Player player = Main.player[Player.FindClosest(new Vector2(i, j), 16, 16)];
 				Tile targetTile = Framing.GetTileSafely(i, j);
-				//bool isBloomingPlant = type == TileID.BloomingHerbs;
 				int targetStyle = targetTile.TileFrameX / 18;
-				/*
-				if (type == TileID.MatureHerbs)
-				{
-					switch (targetStyle)
-					{
-						case 0:
-							{
-								if (Main.dayTime)
-									isBloomingPlant = true;
-								break;
-							}
-						case 1:
-							{
-								if (!Main.dayTime)
-									isBloomingPlant = true;
-								break;
-							}
-						case 3:
-							{
-								if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
-									isBloomingPlant = true;
-								break;
-							}
-						case 4:
-							{
-								if (Main.raining || Main.cloudAlpha > 0f)
-									isBloomingPlant = true;
-								break;
-							}
-						case 5:
-							{
-								if (!Main.raining && Main.dayTime && Main.time > 40500.00)
-									isBloomingPlant = true;
-								break;
-							}
-						default:
-							break;
-					}
-				}
-				*/
 				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && player.HeldItem.type == ItemID.StaffofRegrowth)
 				{
 					Tile baseTile = Framing.GetTileSafely(i, j + 1);
@@ -142,24 +101,18 @@ namespace NeonQOL
 						plantDrop = 2358;
 						seedDrop = 2357;
 					}
-					//int item = Item.NewItem(i * 16, j * 16, 16, 16, plantDrop,
-					//						WorldGen.genRand.Next(player.HeldItem.type == ItemID.StaffofRegrowth ? 1 : 2, player.HeldItem.type == ItemID.StaffofRegrowth ? 3 : 6));
 					EntitySource_TileBreak eSource = new(i, j);
 					Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
-					int item = Item.NewItem(eSource, tileRectangle, plantDrop, WorldGen.genRand.Next(1,3));
+					int item = Item.NewItem(eSource, tileRectangle, plantDrop, WorldGen.genRand.Next(1, 3));
 					if (Main.netMode != NetmodeID.SinglePlayer)
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-					//item = Item.NewItem(i * 16, j * 16, 16, 16, seedDrop, WorldGen.genRand.Next(1, 6));
 					item = Item.NewItem(eSource, tileRectangle, seedDrop, WorldGen.genRand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
 					if (Main.netMode != NetmodeID.SinglePlayer)
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
 					if (onPlanter)
 					{
 						fail = true;
-						targetTile.TileType = 82;
-						WorldGen.SquareTileFrame(i, j);
-						if (Main.netMode != NetmodeID.SinglePlayer)
-							NetMessage.SendTileSquare(-1, i, j, 1);
+						targetTile.TileType = TileID.ImmatureHerbs;
 					}
 					noItem = true;
 				}
@@ -189,10 +142,8 @@ namespace NeonQOL
 				mouse.Y = Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
 			int targetX = (int)MathHelper.Clamp(Player.tileTargetX, 10, Main.maxTilesX - 10);
 			int targetY = (int)MathHelper.Clamp(Player.tileTargetY, 10, Main.maxTilesY - 10);
-			bool disableCursor = false;
 			Tile targetTile = Main.tile[targetX, targetY];
-			//TileLoader.DisableSmartCursor(Main.tile[targetX, targetY], ref disableCursor);
-			disableCursor = TileID.Sets.DisableSmartCursor[targetTile.TileType];
+			bool disableCursor = TileID.Sets.DisableSmartCursor[targetTile.TileType];
 			int tileBoost = item.tileBoost;
 			int maxLeft = (int)(Player.position.X / 16f) - Player.tileRangeX - tileBoost + 1;
 			int maxRight = (int)((Player.position.X + Player.width) / 16f) + Player.tileRangeX + tileBoost - 1;
