@@ -103,10 +103,10 @@ namespace NeonQOL
 					}
 					EntitySource_TileBreak eSource = new(i, j);
 					Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
-					int item = Item.NewItem(eSource, tileRectangle, plantDrop, WorldGen.genRand.Next(1, 3));
+					int item = Item.NewItem(eSource, tileRectangle, plantDrop, Main.rand.Next(1, 3));
 					if (Main.netMode != NetmodeID.SinglePlayer)
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-					item = Item.NewItem(eSource, tileRectangle, seedDrop, WorldGen.genRand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
+					item = Item.NewItem(eSource, tileRectangle, seedDrop, Main.rand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
 					if (Main.netMode != NetmodeID.SinglePlayer)
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
 					if (onPlanter)
