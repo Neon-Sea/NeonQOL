@@ -82,37 +82,48 @@ namespace NeonQOL
 			//KillTile override for blooming herbs, makes seeds replant if holding staff and adjusts seed drops accordingly
 			if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
 			{
-				Player player = Main.player[Player.FindClosest(new Vector2(i, j), 16, 16)];
+				Player player = Main.player[Player.FindClosest(new Vector2(i * 16, j * 16), 16, 16)];
 				Tile targetTile = Framing.GetTileSafely(i, j);
 				int targetStyle = targetTile.TileFrameX / 18;
 				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && player.HeldItem.type == ItemID.StaffofRegrowth)
 				{
-					Tile baseTile = Framing.GetTileSafely(i, j + 1);
-					bool onPlanter = (baseTile.TileType == TileID.ClayPot || baseTile.TileType == TileID.PlanterBox);
-					int plantDrop;
-					int seedDrop;
-					if (targetStyle != 6)
+					if (true)
 					{
-						plantDrop = 313 + targetStyle;
-						seedDrop = 307 + targetStyle;
-					}
-					else
-					{
-						plantDrop = 2358;
-						seedDrop = 2357;
-					}
-					EntitySource_TileBreak eSource = new(i, j);
-					Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
-					int item = Item.NewItem(eSource, tileRectangle, plantDrop, Main.rand.Next(1, 3));
-					if (Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-					item = Item.NewItem(eSource, tileRectangle, seedDrop, Main.rand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
-					if (Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-					if (onPlanter)
-					{
-						fail = true;
-						targetTile.TileType = TileID.ImmatureHerbs;
+						Tile baseTile = Framing.GetTileSafely(i, j + 1);
+						bool onPlanter = (baseTile.TileType == TileID.ClayPot || baseTile.TileType == TileID.PlanterBox);
+						int plantDrop;
+						int seedDrop;
+						if (targetStyle != 6)
+						{
+							plantDrop = 313 + targetStyle;
+							seedDrop = 307 + targetStyle;
+						}
+						else
+						{
+							plantDrop = 2358;
+							seedDrop = 2357;
+						}
+						EntitySource_TileBreak eSource = new(i, j);
+						Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
+						int item;
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+						{
+							item = Item.NewItem(eSource, tileRectangle, plantDrop, Main.rand.Next(1, 3));
+							if (Main.netMode != NetmodeID.SinglePlayer)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
+							}
+							item = Item.NewItem(eSource, tileRectangle, seedDrop, Main.rand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
+							if (Main.netMode != NetmodeID.SinglePlayer)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
+							}
+						}
+						if (onPlanter)
+						{
+							fail = true;
+							targetTile.TileType = TileID.ImmatureHerbs;
+						}
 					}
 					noItem = true;
 				}
