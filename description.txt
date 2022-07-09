@@ -3,5 +3,5 @@ A partial port of BotanyPlus from 1.3. Adds the following features to the Staff 
 - Works with the smart cursor
 - Automatically replants seeds in pots and planters
 
-Latest update (0.1.1)
-- Multiplayer bug fixes
+Latest update (0.1.2)
+- Fixed multiplayer issue where Shiverthorn and Blinkroot did not drop items

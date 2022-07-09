@@ -87,43 +87,44 @@ namespace NeonQOL
 				int targetStyle = targetTile.TileFrameX / 18;
 				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && player.HeldItem.type == ItemID.StaffofRegrowth)
 				{
-					if (true)
+					Tile baseTile = Framing.GetTileSafely(i, j + 1);
+					bool onPlanter = (baseTile.TileType == TileID.ClayPot || baseTile.TileType == TileID.PlanterBox);
+					int plantDrop;
+					int seedDrop;
+					if (targetStyle != 6)
 					{
-						Tile baseTile = Framing.GetTileSafely(i, j + 1);
-						bool onPlanter = (baseTile.TileType == TileID.ClayPot || baseTile.TileType == TileID.PlanterBox);
-						int plantDrop;
-						int seedDrop;
-						if (targetStyle != 6)
+						plantDrop = 313 + targetStyle;
+						seedDrop = 307 + targetStyle;
+					}
+					else
+					{
+						plantDrop = 2358;
+						seedDrop = 2357;
+					}
+					EntitySource_TileBreak eSource = new(i, j);
+					Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
+					int item;
+					if (Main.netMode != NetmodeID.MultiplayerClient || ((targetStyle ==  6 || targetStyle == 2) && player.whoAmI == Main.myPlayer))
+					{
+						item = Item.NewItem(eSource, tileRectangle, plantDrop, Main.rand.Next(1, 3));
+						if (Main.netMode != NetmodeID.SinglePlayer)
 						{
-							plantDrop = 313 + targetStyle;
-							seedDrop = 307 + targetStyle;
+							NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
 						}
-						else
+						item = Item.NewItem(eSource, tileRectangle, seedDrop, Main.rand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
+						if (Main.netMode != NetmodeID.SinglePlayer)
 						{
-							plantDrop = 2358;
-							seedDrop = 2357;
+							NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
 						}
-						EntitySource_TileBreak eSource = new(i, j);
-						Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
-						int item;
-						if (Main.netMode != NetmodeID.MultiplayerClient)
-						{
-							item = Item.NewItem(eSource, tileRectangle, plantDrop, Main.rand.Next(1, 3));
-							if (Main.netMode != NetmodeID.SinglePlayer)
-							{
-								NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
-							}
-							item = Item.NewItem(eSource, tileRectangle, seedDrop, Main.rand.Next(onPlanter ? 0 : 1, onPlanter ? 5 : 6));
-							if (Main.netMode != NetmodeID.SinglePlayer)
-							{
-								NetMessage.SendData(MessageID.SyncItem, -1, Main.myPlayer, null, item, 1f);
-							}
-						}
-						if (onPlanter)
-						{
-							fail = true;
-							targetTile.TileType = TileID.ImmatureHerbs;
-						}
+					}
+					if (onPlanter)
+					{
+						fail = true;
+						targetTile.TileType = TileID.ImmatureHerbs;
+						if (Main.netMode == NetmodeID.MultiplayerClient && ((targetStyle == 6 || targetStyle == 2) && player.whoAmI == Main.myPlayer))
+                        {
+							NetMessage.SendTileSquare(-1, i, j);
+                        }
 					}
 					noItem = true;
 				}
