@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,13 +9,28 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework;
+using Terraria.ModLoader.Config;
 
 namespace NeonQOL
 {
+	public class AlchemyConfig : ModConfig
+	{
+		public override ConfigScope Mode => ConfigScope.ServerSide;
+		[DefaultValue(true)]
+		public bool AutoSelect;
+
+        [DefaultValue(true)]
+        public bool SmartCursor;
+
+        [DefaultValue(true)]
+		public bool Replant;
+	}
 	public class AlchemyPlants : GlobalTile
 	{
 		public override bool AutoSelect(int i, int j, int type, Item item)
 		{
+			if (!ModContent.GetInstance<AlchemyConfig>().AutoSelect)
+				return false;
 			Player player = Main.player[Main.myPlayer];
 			//make so the staff of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
 			if (type == 83 || type == 84)
@@ -79,8 +95,10 @@ namespace NeonQOL
 
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-			//KillTile override for blooming herbs, makes seeds replant if holding staff and adjusts seed drops accordingly
-			if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
+            //KillTile override for blooming herbs, makes seeds replant if holding staff and adjusts seed drops accordingly
+            if (!ModContent.GetInstance<AlchemyConfig>().Replant)
+                return;
+            if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
 			{
 				Player player = Main.player[Player.FindClosest(new Vector2(i * 16, j * 16), 16, 16)];
 				Tile targetTile = Framing.GetTileSafely(i, j);
@@ -136,7 +154,7 @@ namespace NeonQOL
 	{
 		public override bool PreItemCheck()
 		{
-			if (Player.HeldItem.type == ItemID.StaffofRegrowth)
+			if (ModContent.GetInstance<AlchemyConfig>().SmartCursor && Player.HeldItem.type == ItemID.StaffofRegrowth)
 				Cursor();
 			return true;
 		}
@@ -167,7 +185,7 @@ namespace NeonQOL
 			maxUp = Utils.Clamp(maxUp, 10, Main.maxTilesY - 10);
 			if (disableCursor && targetX >= maxLeft && targetX <= maxRight && targetY <= maxDown && targetY >= maxUp)
 				return;
-			List<Tuple<int, int>> potentialTargetTiles = new List<Tuple<int, int>>();
+			List<Tuple<int, int>> potentialTargetTiles = [];
 			for (int xCheck = maxLeft; xCheck <= maxRight; xCheck++)
 			{
 				for (int yCheck = maxUp; yCheck <= maxDown; yCheck++)

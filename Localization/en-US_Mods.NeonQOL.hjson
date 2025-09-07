@@ -1,0 +1,20 @@
+Configs: {
+	AlchemyConfig: {
+		DisplayName: Config
+
+		AutoSelect: {
+			Label: Enable Auto Select
+			Tooltip: Automatically select the Staff of Regrowth when holding the Auto Select key and hovering over a harvestable plant
+		}
+
+		Replant: {
+			Label: Enable Auto Replant
+			Tooltip: Automatically replant seeds when harvesting a fully grown plant from a pot or planter
+		}
+
+		SmartCursor: {
+			Label: Enable Smart Cursor
+			Tooltip: Smart cursor targets nearby harvestable plants when holding the Staff of Regrowth
+		}
+	}
+}
