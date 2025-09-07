@@ -1,4 +1,4 @@
-Adds the following features to the Staff of Regrowth:
+Adds the following features to the Staff of Regrowth and Axe of Regrowth:
 - Can be autoselected
 - Works with the smart cursor
 - Automatically replants seeds in pots and planters
@@ -7,4 +7,5 @@ Only works on plants, does not affect behavior when placing grass on dirt.
 
 Latest update (0.2)
 - Migrated mod to 1.4
+- Added compatibility with Axe of Regrowth
 - Added config options to enable or disable specific features

@@ -32,38 +32,38 @@ namespace NeonQOL
 			if (!ModContent.GetInstance<AlchemyConfig>().AutoSelect)
 				return false;
 			Player player = Main.player[Main.myPlayer];
-			//make so the staff of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
-			if (type == 83 || type == 84)
+			//make so the staff or axe of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
+			if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
 			{
 				int targetStyle = Framing.GetTileSafely(i, j).TileFrameX / 18;
-				bool isBloomingPlant = type == 84;
+				bool isBloomingPlant = type == TileID.BloomingHerbs;
 				switch (targetStyle)
 				{
-					case 0:
+					case 0: //Daybloom
 						{
 							if (Main.dayTime)
 								isBloomingPlant = true;
 							break;
 						}
-					case 1:
+					case 1: //Moonglow
 						{
 							if (!Main.dayTime)
 								isBloomingPlant = true;
 							break;
 						}
-					case 3:
+					case 3: //Deathweed
 						{
 							if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
 								isBloomingPlant = true;
 							break;
 						}
-					case 4:
+					case 4: //Waterleaf
 						{
 							if (Main.raining || Main.cloudAlpha > 0f)
 								isBloomingPlant = true;
 							break;
 						}
-					case 5:
+					case 5: //Fireblossom
 						{
 							if (!Main.raining && Main.dayTime && Main.time > 40500.00)
 								isBloomingPlant = true;
@@ -78,11 +78,11 @@ namespace NeonQOL
 				player.position.Y / 16f - (float)Player.tileRangeY - (float)item.tileBoost <= (float)Player.tileTargetY &&
 				(player.position.Y + (float)player.height) / 16f + (float)Player.tileRangeY + (float)item.tileBoost - 2f >= (float)Player.tileTargetY)
 				{
-					if (item.type == ItemID.StaffofRegrowth)
+					if (item.type == ItemID.AcornAxe || item.type == ItemID.AcornAxe) //pick whichever of the two it finds first
 					{
 						return true;
 					}
-					else if (!player.HasItem(ItemID.StaffofRegrowth) && item.pick > 0) // prioritize staff over pick for plants
+					else if (!player.HasItem(ItemID.StaffofRegrowth) && !player.HasItem(ItemID.AcornAxe) && item.pick > 0) // only select pick if player has neither of the regrowth items
 					{
 						return true;
 					}
@@ -103,7 +103,7 @@ namespace NeonQOL
 				Player player = Main.player[Player.FindClosest(new Vector2(i * 16, j * 16), 16, 16)];
 				Tile targetTile = Framing.GetTileSafely(i, j);
 				int targetStyle = targetTile.TileFrameX / 18;
-				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && player.HeldItem.type == ItemID.StaffofRegrowth)
+				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && (player.HeldItem.type == ItemID.StaffofRegrowth || player.HeldItem.type == ItemID.AcornAxe))
 				{
 					Tile baseTile = Framing.GetTileSafely(i, j + 1);
 					bool onPlanter = (baseTile.TileType == TileID.ClayPot || baseTile.TileType == TileID.PlanterBox);
@@ -116,8 +116,8 @@ namespace NeonQOL
 					}
 					else
 					{
-						plantDrop = 2358;
-						seedDrop = 2357;
+						plantDrop = ItemID.Shiverthorn;
+						seedDrop = ItemID.ShiverthornSeeds;
 					}
 					EntitySource_TileBreak eSource = new(i, j);
 					Rectangle tileRectangle = new(i * 16, j * 16, 16, 16);
@@ -154,7 +154,7 @@ namespace NeonQOL
 	{
 		public override bool PreItemCheck()
 		{
-			if (ModContent.GetInstance<AlchemyConfig>().SmartCursor && Player.HeldItem.type == ItemID.StaffofRegrowth)
+			if (ModContent.GetInstance<AlchemyConfig>().SmartCursor && (Player.HeldItem.type == ItemID.StaffofRegrowth || Player.HeldItem.type == ItemID.AcornAxe))
 				Cursor();
 			return true;
 		}
@@ -196,31 +196,31 @@ namespace NeonQOL
 					{
 						switch (checkTile.TileFrameX / 18)
 						{
-							case 0:
+							case 0: //Daybloom
 								{
 									if (Main.dayTime)
 										isBloomingPlant = true;
 									break;
 								}
-							case 1:
+							case 1: //Moonglow
 								{
 									if (!Main.dayTime)
 										isBloomingPlant = true;
 									break;
 								}
-							case 3:
+							case 3: //Deathweed
 								{
 									if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
 										isBloomingPlant = true;
 									break;
 								}
-							case 4:
+							case 4: //Waterleaf
 								{
 									if (Main.raining || Main.cloudAlpha > 0f)
 										isBloomingPlant = true;
 									break;
 								}
-							case 5:
+							case 5: //Fireblossom
 								{
 									if (!Main.raining && Main.dayTime && Main.time > 40500.00)
 										isBloomingPlant = true;
