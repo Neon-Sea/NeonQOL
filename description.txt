@@ -5,7 +5,8 @@ Adds the following features to the Staff of Regrowth and Axe of Regrowth:
 
 Only works on plants, does not affect behavior when placing grass on dirt.
 
-Latest update (0.2)
+Latest update (0.2.1)
 - Migrated mod to 1.4
 - Added compatibility with Axe of Regrowth
 - Added config options to enable or disable specific features
+- Changed name and icon to more accurately reflect what the mod does
