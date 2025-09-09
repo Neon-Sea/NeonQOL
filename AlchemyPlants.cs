@@ -10,6 +10,7 @@ namespace NeonQOL
 	internal class AlchemyPlants : GlobalTile
 	{
         private readonly AlchemyConfig config = ModContent.GetInstance<AlchemyConfig>();
+
         public override bool AutoSelect(int i, int j, int type, Item item)
 		{
 			//make so the staff or axe of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)

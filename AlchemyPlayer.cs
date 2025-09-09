@@ -11,6 +11,7 @@ namespace NeonQOL
     public class AlchemyPlayer : ModPlayer
     {
         private readonly AlchemyConfig config = ModContent.GetInstance<AlchemyConfig>();
+
         public override bool PreItemCheck()
         {
             if (config.SmartCursor
@@ -20,6 +21,7 @@ namespace NeonQOL
             }    
             return true;
         }
+
         private void Cursor()
         {
             //adapted from vanilla, smart cursor code
