@@ -2,7 +2,11 @@ using Terraria.ModLoader;
 
 namespace NeonQOL
 {
-	public class NeonQOL : Mod
+	internal class NeonQOL : Mod
 	{
-	}
+        public override object Call(params object[] args)
+        {
+            return AlchemySystem.instance.Call(args);
+        }
+    }
 }

@@ -1,108 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader.Config;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace NeonQOL
 {
-	public class AlchemyConfig : ModConfig
+	internal class AlchemyPlants : GlobalTile
 	{
-		public override ConfigScope Mode => ConfigScope.ServerSide;
-		[DefaultValue(true)]
-		public bool AutoSelect;
-
-        [DefaultValue(true)]
-        public bool SmartCursor;
-
-        [DefaultValue(true)]
-		public bool Replant;
-	}
-	public class AlchemyPlants : GlobalTile
-	{
-		public override bool AutoSelect(int i, int j, int type, Item item)
+        private readonly AlchemyConfig config = ModContent.GetInstance<AlchemyConfig>();
+        public override bool AutoSelect(int i, int j, int type, Item item)
 		{
-			if (!ModContent.GetInstance<AlchemyConfig>().AutoSelect)
-				return false;
-			Player player = Main.player[Main.myPlayer];
 			//make so the staff or axe of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
-			if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
+			if (!config.AutoSelect)
 			{
-				int targetStyle = Framing.GetTileSafely(i, j).TileFrameX / 18;
-				bool isBloomingPlant = type == TileID.BloomingHerbs;
-				switch (targetStyle)
+				return false;
+			}
+            Player player = Main.player[Main.myPlayer];
+            Tile tile = Framing.GetTileSafely(i, j);
+            //check if tile is within reach, then check if tile is a harvestable plant
+            if (player.position.X / 16f - (float)Player.tileRangeX - (float)item.tileBoost <= (float)Player.tileTargetX &&
+                (player.position.X + (float)player.width) / 16f + (float)Player.tileRangeX + (float)item.tileBoost - 1f >= (float)Player.tileTargetX &&
+                player.position.Y / 16f - (float)Player.tileRangeY - (float)item.tileBoost <= (float)Player.tileTargetY &&
+                (player.position.Y + (float)player.height) / 16f + (float)Player.tileRangeY + (float)item.tileBoost - 2f >= (float)Player.tileTargetY &&
+				AlchemySystem.CheckForValidRegrowthTarget(type, TileObjectData.GetTileStyle(tile)))
+			{
+				if (item.type == ItemID.StaffofRegrowth || item.type == ItemID.AcornAxe) //pick whichever of the two it finds first
 				{
-					case 0: //Daybloom
-						{
-							if (Main.dayTime)
-								isBloomingPlant = true;
-							break;
-						}
-					case 1: //Moonglow
-						{
-							if (!Main.dayTime)
-								isBloomingPlant = true;
-							break;
-						}
-					case 3: //Deathweed
-						{
-							if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
-								isBloomingPlant = true;
-							break;
-						}
-					case 4: //Waterleaf
-						{
-							if (Main.raining || Main.cloudAlpha > 0f)
-								isBloomingPlant = true;
-							break;
-						}
-					case 5: //Fireblossom
-						{
-							if (!Main.raining && Main.dayTime && Main.time > 40500.00)
-								isBloomingPlant = true;
-							break;
-						}
-					default:
-						break;
+					return true;
 				}
-				if (isBloomingPlant &&
-				player.position.X / 16f - (float)Player.tileRangeX - (float)item.tileBoost <= (float)Player.tileTargetX &&
-				(player.position.X + (float)player.width) / 16f + (float)Player.tileRangeX + (float)item.tileBoost - 1f >= (float)Player.tileTargetX &&
-				player.position.Y / 16f - (float)Player.tileRangeY - (float)item.tileBoost <= (float)Player.tileTargetY &&
-				(player.position.Y + (float)player.height) / 16f + (float)Player.tileRangeY + (float)item.tileBoost - 2f >= (float)Player.tileTargetY)
+				else if (!player.HasItem(ItemID.StaffofRegrowth) && !player.HasItem(ItemID.AcornAxe) && item.pick > 0) // only select pick if player has neither of the regrowth items
 				{
-					if (item.type == ItemID.AcornAxe || item.type == ItemID.AcornAxe) //pick whichever of the two it finds first
-					{
-						return true;
-					}
-					else if (!player.HasItem(ItemID.StaffofRegrowth) && !player.HasItem(ItemID.AcornAxe) && item.pick > 0) // only select pick if player has neither of the regrowth items
-					{
-						return true;
-					}
-					else return false;
+					return true;
 				}
 				else return false;
 			}
-			else return false;
+			return false;
 		}
 
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-            //KillTile override for blooming herbs, makes seeds replant if holding staff and adjusts seed drops accordingly
-            if (!ModContent.GetInstance<AlchemyConfig>().Replant)
-                return;
+            //KillTile override for blooming herbs, makes seeds replant if holding staff or axe and adjusts seed drops accordingly
+            if (!config.Replant)
+			{  
+				return; 
+			}
             if (type == TileID.MatureHerbs || type == TileID.BloomingHerbs)
 			{
 				Player player = Main.player[Player.FindClosest(new Vector2(i * 16, j * 16), 16, 16)];
 				Tile targetTile = Framing.GetTileSafely(i, j);
-				int targetStyle = targetTile.TileFrameX / 18;
+				int targetStyle = TileObjectData.GetTileStyle(targetTile);
 				if (WorldGen.IsHarvestableHerbWithSeed(type, targetStyle) && (player.HeldItem.type == ItemID.StaffofRegrowth || player.HeldItem.type == ItemID.AcornAxe))
 				{
 					Tile baseTile = Framing.GetTileSafely(i, j + 1);
@@ -148,114 +96,5 @@ namespace NeonQOL
 				}
 			}
 		}
-	}
-
-	public class AlchemyPlayer : ModPlayer
-	{
-		public override bool PreItemCheck()
-		{
-			if (ModContent.GetInstance<AlchemyConfig>().SmartCursor && (Player.HeldItem.type == ItemID.StaffofRegrowth || Player.HeldItem.type == ItemID.AcornAxe))
-				Cursor();
-			return true;
-		}
-		public void Cursor()
-		{
-			//adapted from vanilla, smart cursor code
-			if (Player.whoAmI != Main.myPlayer)
-				return;
-			Main.SmartCursorShowing = false;
-			if (!Main.SmartCursorIsUsed)
-				return;
-			Item item = Player.inventory[Player.selectedItem];
-			Vector2 mouse = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
-			if (Player.gravDir == -1f)
-				mouse.Y = Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
-			int targetX = (int)MathHelper.Clamp(Player.tileTargetX, 10, Main.maxTilesX - 10);
-			int targetY = (int)MathHelper.Clamp(Player.tileTargetY, 10, Main.maxTilesY - 10);
-			Tile targetTile = Main.tile[targetX, targetY];
-			bool disableCursor = TileID.Sets.DisableSmartCursor[targetTile.TileType];
-			int tileBoost = item.tileBoost;
-			int maxLeft = (int)(Player.position.X / 16f) - Player.tileRangeX - tileBoost + 1;
-			int maxRight = (int)((Player.position.X + Player.width) / 16f) + Player.tileRangeX + tileBoost - 1;
-			int maxUp = (int)(Player.position.Y / 16f) - Player.tileRangeY - tileBoost + 1;
-			int maxDown = (int)((Player.position.Y + Player.height) / 16f) + Player.tileRangeY + tileBoost - 2;
-			maxLeft = Utils.Clamp(maxLeft, 10, Main.maxTilesX - 10);
-			maxRight = Utils.Clamp(maxRight, 10, Main.maxTilesX - 10);
-			maxDown = Utils.Clamp(maxDown, 10, Main.maxTilesY - 10);
-			maxUp = Utils.Clamp(maxUp, 10, Main.maxTilesY - 10);
-			if (disableCursor && targetX >= maxLeft && targetX <= maxRight && targetY <= maxDown && targetY >= maxUp)
-				return;
-			List<Tuple<int, int>> potentialTargetTiles = [];
-			for (int xCheck = maxLeft; xCheck <= maxRight; xCheck++)
-			{
-				for (int yCheck = maxUp; yCheck <= maxDown; yCheck++)
-				{
-					Tile checkTile = Main.tile[xCheck, yCheck];
-					bool isBloomingPlant = checkTile.TileType == TileID.BloomingHerbs;
-					if (checkTile.TileType == TileID.MatureHerbs)
-					{
-						switch (checkTile.TileFrameX / 18)
-						{
-							case 0: //Daybloom
-								{
-									if (Main.dayTime)
-										isBloomingPlant = true;
-									break;
-								}
-							case 1: //Moonglow
-								{
-									if (!Main.dayTime)
-										isBloomingPlant = true;
-									break;
-								}
-							case 3: //Deathweed
-								{
-									if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
-										isBloomingPlant = true;
-									break;
-								}
-							case 4: //Waterleaf
-								{
-									if (Main.raining || Main.cloudAlpha > 0f)
-										isBloomingPlant = true;
-									break;
-								}
-							case 5: //Fireblossom
-								{
-									if (!Main.raining && Main.dayTime && Main.time > 40500.00)
-										isBloomingPlant = true;
-									break;
-								}
-							default:
-								break;
-						}
-					}
-					if (isBloomingPlant)
-						potentialTargetTiles.Add(new Tuple<int, int>(xCheck, yCheck));
-				}
-			}
-			if (potentialTargetTiles.Count > 0)
-			{
-				float distanceToMouse = -1f;
-				Tuple<int, int> currentTileCoords = potentialTargetTiles[0];
-				for (int target = 0; target < potentialTargetTiles.Count; target++)
-				{
-					float distanceNew = Vector2.Distance(new Vector2(potentialTargetTiles[target].Item1, potentialTargetTiles[target].Item2) * 16f + Vector2.One * 8f, mouse);
-					if (distanceToMouse == -1f || distanceNew < distanceToMouse)
-					{
-						distanceToMouse = distanceNew;
-						currentTileCoords = potentialTargetTiles[target];
-					}
-				}
-				if (Collision.InTileBounds(currentTileCoords.Item1, currentTileCoords.Item2, maxLeft, maxUp, maxRight, maxDown))
-				{
-					Main.SmartCursorX = (Player.tileTargetX = currentTileCoords.Item1);
-					Main.SmartCursorY = (Player.tileTargetY = currentTileCoords.Item2);
-					Main.SmartCursorShowing = true;
-				}
-				potentialTargetTiles.Clear();
-			}
-		}
-
 	}
 }

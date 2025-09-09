@@ -4,17 +4,22 @@ Configs: {
 
 		AutoSelect: {
 			Label: Enable Auto Select
-			Tooltip: Automatically select the Staff/Axe of Regrowth when holding the Auto Select key and hovering over a harvestable plant
+			DefaultToolTip: Automatically select the Staff/Axe of Regrowth when holding the Auto Select key and hovering over a harvestable plant
 		}
 
 		Replant: {
 			Label: Enable Auto Replant
-			Tooltip: Automatically replant seeds when harvesting a fully grown plant from a pot or planter with the Staff/Axe of Regrowth
+			DefaultToolTip: Automatically replant seeds when harvesting a fully grown plant from a pot or planter with the Staff/Axe of Regrowth
 		}
 
 		SmartCursor: {
 			Label: Enable Smart Cursor
-			Tooltip: Smart cursor targets nearby harvestable plants when holding the Staff/Axe of Regrowth
+			DefaultToolTip: Smart cursor targets nearby harvestable plants when holding the Staff/Axe of Regrowth
+		}
+
+		Disabled: {
+			SingleMod: Disabled by {0}
+			MultiMod: Disabled by {0} and {1} other mod(s)
 		}
 	}
 }
