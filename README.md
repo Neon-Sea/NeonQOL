@@ -7,25 +7,65 @@ Adds the following features to the Staff of Regrowth and Axe of Regrowth:
 Only works on plants, does not affect behavior when placing grass on dirt. Also does not alter the behavior of the Axe of Regrowth to replant tree saplings.
 
 # Mod Calls
-This mod offers compatibility options using the following mod calls. For best results, send these in `ModSystem.PostSetupContent()`\
-Please note that at this time, modded plants will only work with auto select and smart cursor. Replanting seeds only supports vanilla plants and will (or should) not affect plants added by mod calls
+This mod offers compatibility options using the following mod calls. For best results, send these in `ModSystem.PostSetupContent()`
 
 ## AddHarvestablePlant
-Adds an entry to the list of tiles that can be targeted by auto select and the smart cursor while holding the Staff/Axe of Regrowth
-
-Example: `NeonQOL.Call("AddHarvestablePlant", ModContent.TileType<Tiles.CustomPlant>(), 0)`
+Adds an entry to the list of tiles that you would like to function with this mod
 
 ### Argument 0
 `string` - "AddHarvestablePlant". Indicates the type of mod call being sent
 ### Argument 1
-`int` - TileID of your custom plant
+`Mod` - Your mod's instance
 ### Argument 2
-`int` - TileStyle. Optional, defaults to 0 if none given. Use this if your plant uses a specific style to determine whether it is harvestable
+`int` - TileID of your custom plant in its initial (freshly planted) stage.
+### Argument 3
+`int` - TileID of your custom plant in its harvestable stage.\
+Can be the same as above e.g. if your plant uses styles to represent growth stages
+### Argument 4
+`int` or `int[]` - ItemID of the herb that your custom plant drops.\
+Also accepts a list if your tile represents more than one plant
+### Argument 5
+`int` or `int[]` - ItemID of the seed that your custom plant drops.\
+If a list is provided, it must be the same length and order as the one used above
+### Argument 6
+`int` or `int[]` - Optional, TileStyle of your custom plant in its initial (freshly planted) stage. Defaults to 0 if none given.\
+Use this if your plant uses a specific style to determine whether it is harvestable.\
+If a list is provided, it must be the same length and order as the ones used above
+### Argument 7
+`int` or `int[]` - Optional, TileStyle of your custom plant in its harvestable stage. Defaults to 0 if none given.\
+If a list is provided, it must be the same length and order as the ones used above
+### Argument 8
+`Func<bool>` - Optional. If the provided function returns true then the features of this mod will work on the corresponding plant, and vice versa if it returns false.\
+Useful for example if you want to gate this mod's interaction with your plant behind certain progression flags, or just for testing purposes.
+
+### Examples
+```
+//This is an example of the fewest required arguments to add a plant
+NeonQOL.Call("AddHarvestablePlant",
+             Mod,
+             ModContent.TileType<Tiles.CoolPlantImmature>(),
+             ModContent.TileType<Tiles.CoolPlantBlooming>(),
+             ModContent.ItemType<CoolPlantFlower>(),
+             ModContent.ItemType<CoolPlantSeed>());
+```
+
+```
+//This is an example of a tile that represents multiple plants and growth stages, and uses a special condition
+NeonQOL.Call("AddHarvestablePlant",
+             Mod,
+             ModContent.TileType<Tiles.CustomPlants>(),
+             ModContent.TileType<Tiles.CustomPlants>(),
+             [ModContent.ItemID<Items.CustomPlant1>(),ModContent.ItemID<Items.CustomPlant2>(),ModContent.ItemID<Items.CustomPlant3>()],
+             [ModContent.ItemID<Items.CustomPlantSeed1>(),ModContent.ItemID<Items.CustomPlantSeed2>(),ModContent.ItemID<Items.CustomPlantSeed3>()],
+             [0,3,6]
+             [2,5,8]
+             () => Main.hardMode); //Will only work on these plants in hardmode
+```
 
 ## DisableRegrowthConfigs
-If, for any reason, you need to disable any of the three added features from this mod, you can do so with this mod call
+If using the `Func<bool>` argument from the above call is not sufficient and/or you need to outright disable any of the three added features from this mod for compatibility or balancing reasons, you can do so with this mod call
 
-Example: `NeonQOL.Call("DisableRegrowthConfigs", Mod, true, false, false)`
+Example: `NeonQOL.Call("DisableRegrowthConfigs", Mod, true, false, false);`
 
 ### Argument 0
 `string` - "DisableRegrowthConfigs". Indicates the type of mod call being sent

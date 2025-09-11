@@ -13,25 +13,27 @@ namespace NeonQOL
 
         public override bool AutoSelect(int i, int j, int type, Item item)
 		{
-			//make so the staff or axe of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
+			// make so the staff or axe of regrowth can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
 			if (!config.AutoSelect)
 			{
 				return false;
 			}
             Player player = Main.player[Main.myPlayer];
             Tile tile = Framing.GetTileSafely(i, j);
-            //check if tile is within reach, then check if tile is a harvestable plant
+            // check if tile is within reach and if tile is a harvestable plant
             if (player.position.X / 16f - (float)Player.tileRangeX - (float)item.tileBoost <= (float)Player.tileTargetX &&
                 (player.position.X + (float)player.width) / 16f + (float)Player.tileRangeX + (float)item.tileBoost - 1f >= (float)Player.tileTargetX &&
                 player.position.Y / 16f - (float)Player.tileRangeY - (float)item.tileBoost <= (float)Player.tileTargetY &&
                 (player.position.Y + (float)player.height) / 16f + (float)Player.tileRangeY + (float)item.tileBoost - 2f >= (float)Player.tileTargetY &&
 				AlchemySystem.CheckForValidRegrowthTarget(type, TileObjectData.GetTileStyle(tile)))
 			{
-				if (item.type == ItemID.StaffofRegrowth || item.type == ItemID.AcornAxe) //pick whichever of the two it finds first
+                // pick whichever of the two it finds first
+                if (item.type == ItemID.StaffofRegrowth || item.type == ItemID.AcornAxe)
 				{
 					return true;
 				}
-				else if (!player.HasItem(ItemID.StaffofRegrowth) && !player.HasItem(ItemID.AcornAxe) && item.pick > 0) // only select pick if player has neither of the regrowth items
+                // only select pick if player has neither of the regrowth items
+                else if (!player.HasItem(ItemID.StaffofRegrowth) && !player.HasItem(ItemID.AcornAxe) && item.pick > 0)
 				{
 					return true;
 				}
@@ -42,7 +44,7 @@ namespace NeonQOL
 
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-            //KillTile override for blooming herbs, makes seeds replant if holding staff or axe and adjusts seed drops accordingly
+            // KillTile override for blooming herbs, makes seeds replant if holding staff or axe and adjusts seed drops accordingly
             if (!config.Replant)
 			{  
 				return; 
