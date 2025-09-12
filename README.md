@@ -56,7 +56,7 @@ NeonQOL.Call("AddHarvestablePlant",
 ```
 
 ```C#
-//This is an example of a tile that represents multiple plants and growth stages, and uses a special condition
+//This is an example of a tile that represents multiple plants and growth stages, and uses a special condition for replanting
 NeonQOL.Call("AddHarvestablePlant",
              Mod,
              ModContent.TileType<Tiles.CustomPlants>(),
