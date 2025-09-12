@@ -12,9 +12,9 @@ namespace NeonQOL
     {
         public static AlchemySystem instance;
         public static List<HarvestablePlant> AllHarvestablePlants = [];
-        public static List<Mod> ModsDisablingAutoSelect = [];
-        public static List<Mod> ModsDisablingSmartCursor = [];
-        public static List<Mod> ModsDisablingReplant = [];
+        public static List<string> ModsDisablingAutoSelect = [];
+        public static List<string> ModsDisablingSmartCursor = [];
+        public static List<string> ModsDisablingReplant = [];
         private readonly AlchemyConfig config = ModContent.GetInstance<AlchemyConfig>();
 
         public override void Load()
@@ -288,17 +288,17 @@ namespace NeonQOL
 
                     if (disableAutoSelect)
                     {
-                        ModsDisablingAutoSelect.Add(callingMod);
+                        ModsDisablingAutoSelect.Add(callingMod.DisplayName);
                     }
 
                     if (disableSmartCursor)
                     {
-                        ModsDisablingSmartCursor.Add(callingMod);
+                        ModsDisablingSmartCursor.Add(callingMod.DisplayName);
                     }
 
                     if (disableReplant)
                     {
-                        ModsDisablingReplant.Add(callingMod);
+                        ModsDisablingReplant.Add(callingMod.DisplayName);
                     }
 
                     config.AutoSelect = !disableAutoSelect && config.AutoSelect;

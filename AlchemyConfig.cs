@@ -77,11 +77,11 @@ namespace NeonQOL
                     }
                     else if (AlchemySystem.ModsDisablingAutoSelect.Count == 1)
                     {
-                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingAutoSelect[0].DisplayName));
+                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingAutoSelect[0]));
                     }
                     else
                     {
-                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingAutoSelect[0].DisplayName, AlchemySystem.ModsDisablingAutoSelect.Count - 1));
+                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingAutoSelect[0], AlchemySystem.ModsDisablingAutoSelect.Count - 1));
                     }
                 }
                 if (MemberInfo.Name == "SmartCursor")
@@ -92,11 +92,11 @@ namespace NeonQOL
                     }
                     else if (AlchemySystem.ModsDisablingSmartCursor.Count == 1)
                     {
-                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingSmartCursor[0].DisplayName));
+                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingSmartCursor[0]));
                     }
                     else
                     {
-                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingSmartCursor[0].DisplayName, AlchemySystem.ModsDisablingSmartCursor.Count - 1));
+                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingSmartCursor[0], AlchemySystem.ModsDisablingSmartCursor.Count - 1));
                     }
                 }
                 if (MemberInfo.Name == "Replant")
@@ -107,11 +107,11 @@ namespace NeonQOL
                     }
                     else if (AlchemySystem.ModsDisablingReplant.Count == 1)
                     {
-                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingReplant[0].DisplayName));
+                        UICommon.TooltipMouseText(DisabledSingle.Format(AlchemySystem.ModsDisablingReplant[0]));
                     }
                     else
                     {
-                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingReplant[0].DisplayName, AlchemySystem.ModsDisablingReplant.Count - 1));
+                        UICommon.TooltipMouseText(DisabledMulti.Format(AlchemySystem.ModsDisablingReplant[0], AlchemySystem.ModsDisablingReplant.Count - 1));
                     }
                 }
             }

@@ -6,8 +6,5 @@ Adds the following features to the Staff of Regrowth and Axe of Regrowth:
 Also supports modded plants, see the GitHub for more information on compatibility features
 Only works on plants, does not affect behavior when placing grass on dirt. Also does not alter the behavior of the Axe of Regrowth to replant tree saplings.
 
-Latest update (1.0)
-- Added basic mod compatibility features
-  - Other mods can add their custom plants
-  - Other mods can disable specific features of this mod to avoid conflicting behavior
-- Other fixes and improvements
+Latest update (1.0.1)
+- Small performance fix
