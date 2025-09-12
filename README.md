@@ -45,7 +45,7 @@ Useful for example if you want to gate this mod's interaction with your plant be
 Useful for example if you want to gate this mod's interaction with your plant behind certain progression flags, or just for testing purposes.
 
 ### Examples
-```
+```C#
 //This is an example of the fewest required arguments to add a plant
 NeonQOL.Call("AddHarvestablePlant",
              Mod,
@@ -55,7 +55,7 @@ NeonQOL.Call("AddHarvestablePlant",
              ModContent.ItemType<CoolPlantSeed>());
 ```
 
-```
+```C#
 //This is an example of a tile that represents multiple plants and growth stages, and uses a special condition
 NeonQOL.Call("AddHarvestablePlant",
              Mod,
@@ -69,7 +69,7 @@ NeonQOL.Call("AddHarvestablePlant",
 ```
 
 ## DisableRegrowthConfigs
-If using the `Func<bool>` argument from the above call is not sufficient and/or you need to outright disable any of the three added features from this mod for compatibility or balancing reasons, you can do so with this mod call
+If the `Func<bool>` arguments from the above call are not sufficient and/or you need to outright disable any of the three added features from this mod for compatibility or balancing reasons, you can do so with this mod call
 
 Example: `NeonQOL.Call("DisableRegrowthConfigs", Mod, true, false, false);`
 
