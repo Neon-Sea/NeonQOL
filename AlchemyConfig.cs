@@ -15,6 +15,12 @@ namespace NeonQOL
     internal class AlchemyConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ServerSide;
+
+        [DefaultValue(true)]
+        [CustomModConfigItem(typeof(LockableBool))]
+        [TooltipKey("$")]
+        public bool Replant;
+
         [DefaultValue(true)]
         [CustomModConfigItem(typeof(LockableBool))]
         [TooltipKey("$")]
@@ -24,11 +30,6 @@ namespace NeonQOL
         [CustomModConfigItem(typeof(LockableBool))]
         [TooltipKey("$")]
         public bool SmartCursor;
-
-        [DefaultValue(true)]
-        [CustomModConfigItem(typeof(LockableBool))]
-        [TooltipKey("$")]
-        public bool Replant;
     }
 
     internal class LockableBool : ConfigElement<bool>

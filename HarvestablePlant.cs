@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NeonQOL
 {
@@ -7,14 +8,18 @@ namespace NeonQOL
         public int TileTypeImmature;
         public int TileTypeBlooming;
         public int ItemTypePlant;
-        public int[] ItemTypePlantList;
+        public List<int> ItemTypePlantList;
         public int ItemTypeSeed;
-        public int[] ItemTypeSeedList;
+        public List<int> ItemTypeSeedList;
         public int TileStyleImmature;
-        public int[] TileStyleImmatureList;
+        public List<int> TileStyleImmatureList;
         public int TileStyleBlooming;
-        public int[] TileStyleBloomingList;
-        public Func<bool> Cond;
+        public List<int> TileStyleBloomingList;
+        public Func<bool> CondReplant;
+        public Func<bool> CondAutoSelect;
+        public Func<bool> CondSmartCursor;
+
+        // type representing a plant in its immature and blooming forms as well as the seed and item it drops, plus optional conditions for interacting with smart regrowth
 
         public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed)
         {
@@ -24,7 +29,9 @@ namespace NeonQOL
             ItemTypeSeed = itemTypeSeed;
             TileStyleImmature = 0;
             TileStyleBlooming = 0;
-            Cond = () => true;
+            CondReplant = () => true;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
         }
 
         public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature)
@@ -35,7 +42,9 @@ namespace NeonQOL
             ItemTypeSeed = itemTypeSeed;
             TileStyleImmature = tileStyleImmature;
             TileStyleBlooming = 0;
-            Cond = () => true;
+            CondReplant = () => true;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
         }
 
         public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature, int tileStyleBlooming)
@@ -46,10 +55,12 @@ namespace NeonQOL
             ItemTypeSeed = itemTypeSeed;
             TileStyleImmature = tileStyleImmature;
             TileStyleBlooming = tileStyleBlooming;
-            Cond = () => true;
+            CondReplant = () => true;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
         }
 
-        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature, int tileStyleBlooming, Func<bool> cond)
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature, int tileStyleBlooming, Func<bool> condReplant)
         {
             TileTypeImmature = tileTypeImmature;
             TileTypeBlooming = tileTypeBlooming;
@@ -57,10 +68,39 @@ namespace NeonQOL
             ItemTypeSeed = itemTypeSeed;
             TileStyleImmature = tileStyleImmature;
             TileStyleBlooming = tileStyleBlooming;
-            Cond = cond;
+            CondReplant = condReplant;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
         }
 
-        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int[] itemTypePlant, int[] itemTypeSeed, int[] tileStyleImmature, int[] tileStyleBlooming)
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature, int tileStyleBlooming, Func<bool> condReplant, Func<bool> condAutoSelect)
+        {
+            TileTypeImmature = tileTypeImmature;
+            TileTypeBlooming = tileTypeBlooming;
+            ItemTypePlant = itemTypePlant;
+            ItemTypeSeed = itemTypeSeed;
+            TileStyleImmature = tileStyleImmature;
+            TileStyleBlooming = tileStyleBlooming;
+            CondReplant = condReplant;
+            CondAutoSelect = condAutoSelect;
+            CondSmartCursor = () => true;
+        }
+
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int itemTypePlant, int itemTypeSeed, int tileStyleImmature, int tileStyleBlooming, Func<bool> condReplant, Func<bool> condAutoSelect, Func<bool> condSmartCursor)
+        {
+            TileTypeImmature = tileTypeImmature;
+            TileTypeBlooming = tileTypeBlooming;
+            ItemTypePlant = itemTypePlant;
+            ItemTypeSeed = itemTypeSeed;
+            TileStyleImmature = tileStyleImmature;
+            TileStyleBlooming = tileStyleBlooming;
+            CondReplant = condReplant;
+            CondAutoSelect = condAutoSelect;
+            CondSmartCursor = condSmartCursor;
+        }
+
+
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, List<int> itemTypePlant, List<int> itemTypeSeed, List<int> tileStyleImmature, List<int> tileStyleBlooming)
         {
             TileTypeImmature = tileTypeImmature;
             TileTypeBlooming = tileTypeBlooming;
@@ -68,10 +108,12 @@ namespace NeonQOL
             ItemTypeSeedList = itemTypeSeed;
             TileStyleImmatureList = tileStyleImmature;
             TileStyleBloomingList = tileStyleBlooming;
-            Cond = () => true;
+            CondReplant = () => true;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
         }
 
-        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, int[] itemTypePlant, int[] itemTypeSeed, int[] tileStyleImmature, int[] tileStyleBlooming, Func<bool> cond)
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, List<int> itemTypePlant, List<int> itemTypeSeed, List<int> tileStyleImmature, List<int> tileStyleBlooming, Func<bool> condReplant)
         {
             TileTypeImmature = tileTypeImmature;
             TileTypeBlooming = tileTypeBlooming;
@@ -79,7 +121,35 @@ namespace NeonQOL
             ItemTypeSeedList = itemTypeSeed;
             TileStyleImmatureList = tileStyleImmature;
             TileStyleBloomingList = tileStyleBlooming;
-            Cond = cond;
+            CondReplant = condReplant;
+            CondAutoSelect = () => true;
+            CondSmartCursor = () => true;
+        }
+
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, List<int> itemTypePlant, List<int> itemTypeSeed, List<int> tileStyleImmature, List<int> tileStyleBlooming, Func<bool> condReplant, Func<bool> condAutoSelect)
+        {
+            TileTypeImmature = tileTypeImmature;
+            TileTypeBlooming = tileTypeBlooming;
+            ItemTypePlantList = itemTypePlant;
+            ItemTypeSeedList = itemTypeSeed;
+            TileStyleImmatureList = tileStyleImmature;
+            TileStyleBloomingList = tileStyleBlooming;
+            CondReplant = condReplant;
+            CondAutoSelect = condAutoSelect;
+            CondSmartCursor = () => true;
+        }
+
+        public HarvestablePlant(int tileTypeImmature, int tileTypeBlooming, List<int> itemTypePlant, List<int> itemTypeSeed, List<int> tileStyleImmature, List<int> tileStyleBlooming, Func<bool> condReplant, Func<bool> condAutoSelect, Func<bool> condSmartCursor)
+        {
+            TileTypeImmature = tileTypeImmature;
+            TileTypeBlooming = tileTypeBlooming;
+            ItemTypePlantList = itemTypePlant;
+            ItemTypeSeedList = itemTypeSeed;
+            TileStyleImmatureList = tileStyleImmature;
+            TileStyleBloomingList = tileStyleBlooming;
+            CondReplant = condReplant;
+            CondAutoSelect = condAutoSelect;
+            CondSmartCursor = condSmartCursor;
         }
     }
 }

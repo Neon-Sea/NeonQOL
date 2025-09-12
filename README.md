@@ -35,7 +35,13 @@ If a list is provided, it must be the same length and order as the ones used abo
 `int` or `int[]` - Optional, TileStyle of your custom plant in its harvestable stage. Defaults to 0 if none given.\
 If a list is provided, it must be the same length and order as the ones used above
 ### Argument 8
-`Func<bool>` - Optional. If the provided function returns true then the features of this mod will work on the corresponding plant, and vice versa if it returns false.\
+`Func<bool>` - Optional, replant condition. If the provided function returns true then the provided plant will be automatically replanted by the Staff/Axe of Regrowth, and vice versa if false.\
+Useful for example if you want to gate this mod's interaction with your plant behind certain progression flags, or just for testing purposes.
+### Argument 9
+`Func<bool>` - Optional, auto select condition. If the provided function returns true then the provided plant will auto select the Staff/Axe of Regrowth when holding auto select, and vice versa if it returns false.\
+Useful for example if you want to gate this mod's interaction with your plant behind certain progression flags, or just for testing purposes.
+### Argument 10
+`Func<bool>` - Optional, smart cursor condition. If the provided function returns true then the Staff/Axe of regrowth will treat the provided plant as a valid smart cursor target, and vice versa if it returns false.\
 Useful for example if you want to gate this mod's interaction with your plant behind certain progression flags, or just for testing purposes.
 
 ### Examples
@@ -55,10 +61,10 @@ NeonQOL.Call("AddHarvestablePlant",
              Mod,
              ModContent.TileType<Tiles.CustomPlants>(),
              ModContent.TileType<Tiles.CustomPlants>(),
-             [ModContent.ItemID<Items.CustomPlant1>(),ModContent.ItemID<Items.CustomPlant2>(),ModContent.ItemID<Items.CustomPlant3>()],
-             [ModContent.ItemID<Items.CustomPlantSeed1>(),ModContent.ItemID<Items.CustomPlantSeed2>(),ModContent.ItemID<Items.CustomPlantSeed3>()],
-             [0,3,6]
-             [2,5,8]
+             new int[] { ModContent.ItemID<Items.CustomPlant1>(),ModContent.ItemID<Items.CustomPlant2>(),ModContent.ItemID<Items.CustomPlant3>() },
+             new int[] { ModContent.ItemID<Items.CustomPlantSeed1>(),ModContent.ItemID<Items.CustomPlantSeed2>(),ModContent.ItemID<Items.CustomPlantSeed3>() },
+             new int[] { 0,3,6 }
+             new int[] { 2,5,8 }
              () => Main.hardMode); //Will only work on these plants in hardmode
 ```
 
