@@ -25,8 +25,8 @@ namespace NeonQOL
             AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Moonglow, ItemID.MoonglowSeeds, 1, 1, () => !Main.dayTime, () => !Main.dayTime, () => !Main.dayTime));
             AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.BloomingHerbs, ItemID.Blinkroot, ItemID.BlinkrootSeeds, 2, 2));
             AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Deathweed, ItemID.DeathweedSeeds, 3, 3, () => !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0), () => !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0), () => !Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0)));
-            AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Waterleaf, ItemID.Waterleaf, 4, 4, () => Main.raining || Main.cloudAlpha > 0f, () => Main.raining || Main.cloudAlpha > 0f, () => Main.raining || Main.cloudAlpha > 0f));
-            AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Fireblossom, ItemID.Fireblossom, 5, 5, () => !Main.raining && Main.dayTime && Main.time > 40500.00, () => !Main.raining && Main.dayTime && Main.time > 40500.00, () => !Main.raining && Main.dayTime && Main.time > 40500.00));
+            AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Waterleaf, ItemID.WaterleafSeeds, 4, 4, () => Main.raining || Main.cloudAlpha > 0f, () => Main.raining || Main.cloudAlpha > 0f, () => Main.raining || Main.cloudAlpha > 0f));
+            AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.MatureHerbs, ItemID.Fireblossom, ItemID.FireblossomSeeds, 5, 5, () => !Main.raining && Main.dayTime && Main.time > 40500.00, () => !Main.raining && Main.dayTime && Main.time > 40500.00, () => !Main.raining && Main.dayTime && Main.time > 40500.00));
             AllHarvestablePlants.Add(new HarvestablePlant(TileID.ImmatureHerbs, TileID.BloomingHerbs, ItemID.Shiverthorn, ItemID.ShiverthornSeeds, 6, 6));
         }
 

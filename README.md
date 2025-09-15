@@ -61,8 +61,8 @@ NeonQOL.Call("AddHarvestablePlant",
              Mod,
              ModContent.TileType<Tiles.CustomPlants>(),
              ModContent.TileType<Tiles.CustomPlants>(),
-             new int[] { ModContent.ItemID<Items.CustomPlant1>(),ModContent.ItemID<Items.CustomPlant2>(),ModContent.ItemID<Items.CustomPlant3>() },
-             new int[] { ModContent.ItemID<Items.CustomPlantSeed1>(),ModContent.ItemID<Items.CustomPlantSeed2>(),ModContent.ItemID<Items.CustomPlantSeed3>() },
+             new int[] { ModContent.ItemID<Items.CustomPlant1>(), ModContent.ItemID<Items.CustomPlant2>(), ModContent.ItemID<Items.CustomPlant3>() },
+             new int[] { ModContent.ItemID<Items.CustomPlantSeed1>(), ModContent.ItemID<Items.CustomPlantSeed2>(), ModContent.ItemID<Items.CustomPlantSeed3>() },
              new int[] { 0, 3, 6 }
              new int[] { 2, 5, 8 }
              () => Main.hardMode); //Will only work on these plants in hardmode
